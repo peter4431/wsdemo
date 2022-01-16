@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wsdemo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wsdemo
+  template:
+    metadata:
+      labels:
+        app: wsdemo
+    spec:
+      containers:
+        - name: wsdemo
+          image: peter4431/wsdemo:0.4
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wsdemo-service-np
+spec:
+  ports:
+    - name: wsdemo-np-port
+      port: 8080
+      nodePort: 32100
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: wsdemo
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wsdemo-service-lb
+spec:
+  ports:
+    - name: wsdemo-lb-port
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: wsdemo
+  type: LoadBalancer
+---
